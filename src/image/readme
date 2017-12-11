@@ -1,0 +1,5 @@
+Lisez le fichier image.c et main.c pour comprendre comment on utilise
+le module image.  Vous pouvez tester l'exécutable en tapant:
+
+testimage > /tmp/deg.ppm
+
