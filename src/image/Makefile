@@ -16,6 +16,6 @@ staticlib: $(OBJ)
 
 $(PATHOBJ)%.o: %.c ../../include/*.h
 	$(CC) $< $(CFLAGS) -c -o $@
-	
+
 clean:
 	rm -f $(PATHOBJ)*.o

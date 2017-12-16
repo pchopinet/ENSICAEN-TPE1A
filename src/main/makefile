@@ -7,6 +7,8 @@ PATHLIB=../../lib/
 PATHOBJ=../../obj/main/
 PATHBIN=../../bin/main/
 
+
+
 all: test
 
 test: testMoments testRAG
@@ -14,8 +16,8 @@ test: testMoments testRAG
 testRAG:
 	true
 
-testMoments: $(PATHOBJ)testMoments.o
-	$(CC) -o $(PATHBIN)$@ $^ $(LDFLAGS)
+testMoments: $(PATHOBJ)testMoments.o $(PATHOBJ)moments.o
+	$(CC) -o $(PATHBIN)$@ $^ $(LDFLAGS) $(PATHLIB)libimage.a
 
 $(PATHOBJ)%.o: %.c ../../include/*.h
 	$(CC) $< $(CFLAGS) -c -o $@

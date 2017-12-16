@@ -1,0 +1,8 @@
+P3 # Le magic number qui définit une image couleur en mode ascii
+#test.ppm
+4 4 # Les dimensions de l’image
+15 # La valeur maximale pour une composante couleur
+15 00 00 00 00 00 00 00 00 15 00 15
+00 00 00 00 15 07 00 00 00 00 00 00
+00 00 00 00 00 00 00 15 00 00 00 00
+15 00 15 00 00 00 00 00 00 00 00 00

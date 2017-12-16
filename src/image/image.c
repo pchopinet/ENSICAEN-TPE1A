@@ -87,9 +87,7 @@ void image_initialize(image self,int dim,int largeur,int hauteur)
   /*******************************************/
  /* Fonctions de chargements et Sauvegarde */
 /*****************************************/
-  /*******************************************/
- /* Fonctions de chargements et Sauvegarde */
-/*****************************************/
+
 int image_charger(image self,char* nom)
 {
   FILE * id;
@@ -233,10 +231,12 @@ booleen image_pixel_suivant(image self)
   Courant = pixel;
   return vrai;
 }
+
 void image_debut(image self)
 {
   Courant = Debut;
 }
+
 booleen image_move_to(image self,point p)
 {
   int i = COORDY(*p);

@@ -21,5 +21,12 @@
 #include <moments.h>
 
 int main(){
+  image im= FAIRE_IMAGE();
+  image_charger(im,"../../img/lenna.ppm");
+  int M0;
+  int M2[3];
+  int M3[3];
+  give_moments(&im,1,1,1,&M0,&M2,&M3);
+  printf("%d\n",M0);
 
 }
