@@ -21,7 +21,7 @@
 #include <moments.h>
 
 int main(){
-  image im= FAIRE_IMAGE();
+  image im= FAIRE_image();
   image_charger(im,"../../img/lenna.ppm");
   int M0;
   int M2[3];
