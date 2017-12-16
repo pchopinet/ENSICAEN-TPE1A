@@ -1,14 +1,21 @@
 CC=gcc
-CFLAG=-Wall -g
-LIBS=-L/home/public/PROJET_FONDEMENTS/MODULE_IMAGE/
-OBJ=main.o 
-OUTPUT=testimage
+CFLAGS=-Wall -Wextra -pedantic -I "../../include/" -fpic
+LDFLAGS=
+PATHLIB=../../lib/
+PATHOBJ=../../obj/image/
+PATHBIN=../../bin/image/
+OBJ=$(PATHOBJ)main.o $(PATHOBJ)image.o
 
-$(OUTPUT): $(OBJ)
-	$(CC) $(OBJ) -o $@ $(LIBS) -limage 
+all: staticlib test
 
+test: $(OBJ) staticlib
+	$(CC) $(OBJ) -o $(PATHBIN)$@ $(PATHLIB)libimage.a
+
+staticlib: $(OBJ)
+	ar rcs $(PATHLIB)libimage.a $^
+
+$(PATHOBJ)%.o: %.c ../../include/*.h
+	$(CC) $< $(CFLAGS) -c -o $@
+	
 clean:
-	rm -f $(OUTPUT) $(OBJ)
-
-main.o: main.c image.h objet.h exit_if.h classe.h point.h move_type.h type_obj.h
-	$(CC) $(CFLAG) -c main.c
+	rm -f $(PATHOBJ)*.o
