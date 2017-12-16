@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <time.h>
 
-#include "image.h"
-#include "point.h"
-#include "type_obj.h"
+#include <image.h>
+#include <point.h>
+#include <type_obj.h>
 
 #define Debut     SELF(debut)
 #define Courant   SELF(courant)
