@@ -13,11 +13,14 @@ all: test
 
 test: testMoments testRAG
 
-testRAG:
-	true
+testRAG: $(PATHOBJ)RAG.o $(PATHOBJ)testRAG.o $(PATHOBJ)moments.o 
+	$(CC) -o $(PATHBIN)$@ $^ $(LDFLAGS) $(PATHLIB)libimage.a
 
-testMoments: $(PATHOBJ)testMoments.o $(PATHOBJ)moments.o $(PATHOBJ)RAG.o
+testMoments: $(PATHOBJ)testMoments.o $(PATHOBJ)moments.o
 	$(CC) -o $(PATHBIN)$@ $^ $(LDFLAGS) $(PATHLIB)libimage.a
 
 $(PATHOBJ)%.o: %.c ../../include/*.h
 	$(CC) $< $(CFLAGS) -c -o $@
+
+clean:
+	rm -rf $(PATHOBJ)*.o 

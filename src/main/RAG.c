@@ -18,26 +18,29 @@
 * @file RAG.c
 */
 #include <RAG.h>
+#include <moments.h>
 
-typedef struct{
+typedef struct moments{
   int M0;
   double M1[3];
   double M2[3];
-}Moments;
+} Moments;
 
-typedef struct {
+typedef struct cellule_t Cellule;
+
+struct cellule_t{
   int block;
   Cellule* next;
-}Cellule;
+};
 
-typedef struct{
+struct RAG_t{
   image im;
   int nb_blocks;
   long double erreur_partition;
   Moments* M;
   int * father;
   Cellule* neighbors;
-}RAG;
+};
 
 /**
  * Function initializing the moments of all the blocks of the image.
@@ -50,7 +53,7 @@ static void init_moments_priv(RAG* rag, int n, int m) {
   rag->M = malloc(sizeof(Moments)*n*m);
   int i;
   for (i=0; i<n*m; i++) {
-    give_moments(rag->im, i, n, m, rag->M[i][0], rag->M[i][1], rag->M[i][2])
+    give_moments(rag->im, i, n, m, &(rag->M[i].M0), rag->M[i].M1, rag->M[i].M2);
   }
 }
 
@@ -60,9 +63,9 @@ static void init_moments_priv(RAG* rag, int n, int m) {
  * @param rag is a RAG structure array.
  */
 static void init_father_priv(RAG* rag) {
-  rag->father = calloc(sizeof(int)*n*m);
+  rag->father = malloc(sizeof(int)*rag->nb_blocks);
   int i;
-  for (i=0; i<n*m; i++) {
+  for (i=0; i<rag->nb_blocks; i++) {
     rag->father[i]=i;
   }
 }
@@ -75,22 +78,22 @@ static void init_father_priv(RAG* rag) {
  */
 static void init_neighbors_priv(RAG* rag, int n, int m) {
   int i;
-  Cellule * temp;
+  Cellule temp;
   rag->neighbors = malloc(sizeof(Cellule)*n*m);
   for (i=0;i<n*m;i++){
-    rag->neighbors[i]->block = i;
+    rag->neighbors[i].block = i;
     temp = rag->neighbors[i];
     if (i%n!=0){
-      temp->next = malloc(sizeof(Cellule));
-      temp = temp->next;
-      temp->block = i+1;
+      temp.next = malloc(sizeof(Cellule));
+      temp = *temp.next;
+      temp.block = i+1;
     }
     if (i<n*(m-1)){
-      temp->next = malloc(sizeof(Cellule));
-      temp = temp->next;
-      temp->block = i+n;
+      temp.next = malloc(sizeof(Cellule));
+      temp = *temp.next;
+      temp.block = i+n;
     }
-    temp->next = NULL;
+    temp.next = NULL;
   }
 }
 
@@ -99,8 +102,20 @@ static void init_neighbors_priv(RAG* rag, int n, int m) {
  *
  * @param rag is a RAG structure array.
  */
-static init_partition_error_priv(rag) {
-
+static void init_partition_error_priv(RAG * rag) {
+  int i, k;
+  int M0;
+  double M1, M2;
+  int dim = image_give_dim(rag->im);
+  rag->erreur_partition = 0;
+  for (i=0; i<rag->nb_blocks; i++) {
+    M0 = rag->M[i].M0;
+    for (k=0; k<dim; i++) {
+      M1 = rag->M[i].M1[k];
+      M2 = rag->M[i].M2[k];
+      rag->erreur_partition += M2-(M1*M1*M0*M0);
+    }
+  }
 }
 
 /**
@@ -111,11 +126,12 @@ static init_partition_error_priv(rag) {
  * @param m is the number of block per colone.
  */
 extern RAG* create_RAG(image im, int n, int m) {
-  RAG rag;
-  rag.im = im;
-  rag.nb_block = n*m;
-  init_moments_priv(&rag, n, m);
-  init_father_priv(&rag);
-  init_neighbors_priv(&rag, n, m);
-
+  RAG * rag = malloc(sizeof(RAG));
+  rag->im = im;
+  rag->nb_blocks = n*m;
+  init_moments_priv(rag, n, m);
+  init_father_priv(rag);
+  init_neighbors_priv(rag, n, m);
+  init_partition_error_priv(rag);
+  return rag;
 }

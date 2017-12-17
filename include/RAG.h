@@ -21,7 +21,10 @@
 #ifndef __RAG_H
 #define __RAG_H
 
-extern RAG* create_RAG(image im, int n, int m);
+#include <image.h>
 
+typedef struct RAG_t RAG;
+
+extern RAG* create_RAG(image im, int n, int m);
 
 #endif
