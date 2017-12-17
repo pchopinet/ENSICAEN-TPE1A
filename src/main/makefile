@@ -16,7 +16,7 @@ test: testMoments testRAG
 testRAG:
 	true
 
-testMoments: $(PATHOBJ)testMoments.o $(PATHOBJ)moments.o
+testMoments: $(PATHOBJ)testMoments.o $(PATHOBJ)moments.o $(PATHOBJ)RAG.o
 	$(CC) -o $(PATHBIN)$@ $^ $(LDFLAGS) $(PATHLIB)libimage.a
 
 $(PATHOBJ)%.o: %.c ../../include/*.h

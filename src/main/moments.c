@@ -20,25 +20,45 @@
 
 #include <moments.h>
 
-void give_moments(image * im, int p, int n, int m, int * M0, double * M1, double * M2){
+/**
+ * Function giving the moment of a block of an image.
+ *
+ * @param im the image to analyse.
+ * @param p the number of the block, starting at 0.
+ * @param n the number of blocks per line.
+ * @param m the number of blocks per colone.
+ * @parma M0 the adresse of the moment 0.
+ * @parma M1 the moment 1 array.
+ * @parma M2 the moment 2 array.
+ */
+extern void give_moments(image im, int p, int n, int m, int * M0, double * M1, double * M2){
+
+  assert(p>=0 && p<n*m); // Si le block n'existe pas on sort de la fonction.
+
   int i, j, k;
+  int * pixel;
 
-  //int* pixels = im->debut;
-  int pixel;
-  int hBlock = im->hauteur/m;
-  int lBlock = im->largeur/n;
+  int hBlock = image_give_hauteur(im)/m;
+  int lBlock = image_give_largeur(im)/n;
+  int dim = image_give_dim(im);
 
-  int x = (p%n)*lBlock;
-  int y = (p/n)*hBlock;
+  Point point;
+  point.coordx = (p%n)*lBlock;
+  point.coordy = (p/n)*hBlock;
+
+  image_move_to(im,&point);
 
   for (i=0; i<hBlock; i++) {
-    for (j=0; j<lBlock;j++) {
-      M0+=1;
-      for (k=0; k<im->dim; k++) {
-        pixel = im->debut[im->dim*((y+i)*hBlock+x+j)+k];
-        M1 += pixel;
-        M2 += pixel*pixel;
+    for (j=0; j<lBlock; j++) {
+      pixel = image_lire_pixel(im);
+      *M0+=1;
+      for (k=0; k<dim; k++) {
+        M1[k] += pixel[k];
+        M2[k] += pixel[k]*pixel[k];
       }
+      image_pixel_suivant(im);
     }
+    MOVE_DOWN_POINT(point);
+    image_move_to(im,&point);
   }
 }

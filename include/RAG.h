@@ -11,18 +11,17 @@
 
 /**
  * @author Pierre Chopinet <pierre.chopinet@ecole.ensicaen.fr>
- * @version 0.0.1 / 2017-12-16
+ * @version 0.0.1 / 2017-12-17
  */
 
 /**
- * @file moments.h
+ * @file RAG.h
  */
 
-#ifndef __MOMENTS_H
-#define __MOMENTS_H
+#ifndef __RAG_H
+#define __RAG_H
 
-#include <image.h>
+extern RAG* create_RAG(image im, int n, int m);
 
-extern void give_moments(image im, int nb_block, int n, int m, int * M0, double * M1, double * M2);
 
 #endif
