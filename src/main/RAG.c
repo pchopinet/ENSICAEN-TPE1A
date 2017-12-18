@@ -19,6 +19,7 @@
 */
 #include <RAG.h>
 #include <moments.h>
+#include <float.h>
 
 typedef struct moments{
   int M0;
@@ -43,12 +44,12 @@ struct RAG_t{
 };
 
 /**
- * Function initializing the moments of all the blocks of the image.
- *
- * @param rag is a RAG structure array.
- * @param n is the number of block per line.
- * @param m is the number of block per colone.
- */
+* Function initializing the moments of all the blocks of the image.
+*
+* @param rag is a RAG structure array.
+* @param n is the number of block per line.
+* @param m is the number of block per colone.
+*/
 static void init_moments_priv(RAG* rag, int n, int m) {
   rag->M = malloc(sizeof(Moments)*n*m);
   int i;
@@ -58,10 +59,10 @@ static void init_moments_priv(RAG* rag, int n, int m) {
 }
 
 /**
- * Function initializing the father of each block to it self.
- *
- * @param rag is a RAG structure array.
- */
+* Function initializing the father of each block to it self.
+*
+* @param rag is a RAG structure array.
+*/
 static void init_father_priv(RAG* rag) {
   rag->father = malloc(sizeof(int)*rag->nb_blocks);
   int i;
@@ -71,37 +72,37 @@ static void init_father_priv(RAG* rag) {
 }
 
 /**
- * Function initializing the neighbors of each block. *
- * @param rag is a RAG structure array.
- * @param n is the number of block per line.
- * @param m is the number of block per colone.
- */
+* Function initializing the neighbors of each block. *
+* @param rag is a RAG structure array.
+* @param n is the number of block per line.
+* @param m is the number of block per colone.
+*/
 static void init_neighbors_priv(RAG* rag, int n, int m) {
   int i;
-  Cellule temp;
+  Cellule* temp;
   rag->neighbors = malloc(sizeof(Cellule)*n*m);
   for (i=0;i<n*m;i++){
     rag->neighbors[i].block = i;
-    temp = rag->neighbors[i];
-    if (i%n!=0){
-      temp.next = malloc(sizeof(Cellule));
-      temp = *temp.next;
-      temp.block = i+1;
+    temp = &rag->neighbors[i];
+    if ((i+1)%n!=0){
+      temp->next = malloc(sizeof(Cellule));
+      temp = temp->next;
+      temp->block = i+1;
     }
     if (i<n*(m-1)){
-      temp.next = malloc(sizeof(Cellule));
-      temp = *temp.next;
-      temp.block = i+n;
+      temp->next = malloc(sizeof(Cellule));
+      temp = temp->next;
+      temp->block = i+n;
     }
-    temp.next = NULL;
+    temp->next = NULL;
   }
 }
 
 /**
- * Function calculating the partition error of a block.
- *
- * @param rag is a RAG structure array.
- */
+* Function calculating the partition error of a block.
+*
+* @param rag is a RAG structure array.
+*/
 static void init_partition_error_priv(RAG * rag) {
   int i, k;
   int M0;
@@ -110,21 +111,21 @@ static void init_partition_error_priv(RAG * rag) {
   rag->erreur_partition = 0;
   for (i=0; i<rag->nb_blocks; i++) {
     M0 = rag->M[i].M0;
-    for (k=0; k<dim; i++) {
+    for (k=0; k<dim; k++) {
       M1 = rag->M[i].M1[k];
       M2 = rag->M[i].M2[k];
-      rag->erreur_partition += M2-(M1*M1*M0*M0);
+      rag->erreur_partition += M2-((M1/M0)*(M1/M0));
     }
   }
 }
 
 /**
- * Function creating a RAG array contening the data of eahc block.
- *
- * @param im the image to analize.
- * @param n is the number of block per line.
- * @param m is the number of block per colone.
- */
+* Function creating a RAG array contening the data of eahc block.
+*
+* @param im the image to analize.
+* @param n is the number of block per line.
+* @param m is the number of block per colone.
+*/
 extern RAG* create_RAG(image im, int n, int m) {
   RAG * rag = malloc(sizeof(RAG));
   rag->im = im;
@@ -134,4 +135,45 @@ extern RAG* create_RAG(image im, int n, int m) {
   init_neighbors_priv(rag, n, m);
   init_partition_error_priv(rag);
   return rag;
+}
+
+extern double RAG_give_closest_region(RAG rag, int* b1, int* b2) {
+  assert(rag.nb_blocks>1);
+
+  int i, k, n;
+  double error;
+  double errorMin;
+  errorMin = DBL_MAX;
+  Cellule* cel;
+  int M0, M0n;
+  double *M1, *M1n;
+  int dim = image_give_dim(rag.im);
+
+  for (i=0; i<rag.nb_blocks; i++) {
+    if (rag.father[i]==i) {
+      M0 = rag.M[i].M0;
+      M1 = rag.M[i].M1;
+      cel = rag.neighbors[i].next;
+
+      while (cel!=NULL) {
+        error = 0;
+        n = cel->block;
+        if (rag.father[n]==n) {
+          M0n = rag.M[n].M0;
+          M1n = rag.M[n].M1;
+          for (k=0; k<dim; k++) {
+            error += (M1[k]/M0-M1n[k]/M0n)*(M1[k]/M0-M1n[k]/M0n);
+          }
+          error = error*M0*M0n/(M0+M0n);
+          if (error<errorMin) {
+            errorMin = error;
+            *b1 = i;
+            *b2 = n;
+          }
+        }
+        cel = cel->next;
+      }
+    }
+  }
+  return errorMin;
 }

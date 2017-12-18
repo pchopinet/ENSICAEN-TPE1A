@@ -42,6 +42,12 @@ extern void give_moments(image im, int p, int n, int m, int * M0, double * M1, d
   int lBlock = image_give_largeur(im)/n;
   int dim = image_give_dim(im);
 
+  *M0 = 0;
+  for (k=0; k<dim; k++) {
+    M1[k] = 0;
+    M2[k] = 0;
+  }
+
   Point point;
   point.coordx = (p%n)*lBlock;
   point.coordy = (p/n)*hBlock;

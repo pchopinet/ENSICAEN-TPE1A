@@ -27,4 +27,6 @@ typedef struct RAG_t RAG;
 
 extern RAG* create_RAG(image im, int n, int m);
 
+extern double RAG_give_closest_region(RAG, int*, int*);
+
 #endif
