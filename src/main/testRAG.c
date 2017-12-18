@@ -19,10 +19,61 @@
  */
 
 #include <RAG.h>
+#include <moments.h>
+typedef struct moments{
+  int M0;
+  double M1[3];
+  double M2[3];
+} Moments;
+
+typedef struct cellule_t Cellule;
+
+struct cellule_t{
+  int block;
+  Cellule* next;
+};
+
+struct RAG_t{
+  image im;
+  int nb_blocks;
+  long double erreur_partition;
+  Moments* M;
+  int * father;
+  Cellule* neighbors;
+};
 
 int main(){
+  int i, k;
+  Cellule* cel;
   image im=FAIRE_image();
   image_charger(im,"../../img/lenna.ppm");
-  create_RAG(im,1,1);
+  RAG* rag = create_RAG(im,2,4);
+  printf ("Nombre de blocks : %d\n",rag->nb_blocks);
+  printf ("Erreur de Partition : %Lf\n",rag->erreur_partition);
+  for (i=0; i<rag->nb_blocks; i++) {
+    printf("\n");
+    printf("Block : %d\nListe voisins : ",rag->father[i]);
+    printf("%d ",rag->neighbors[i].block);
+    cel = rag->neighbors[i].next;
+    while (cel!=NULL) {
+      printf("%d ",cel->block);
+      cel = cel->next;
+    }
+    printf("\n");
+    int dim = image_give_dim(im);
+    printf("M0 : %d\n",rag->M[i].M0);
+    for (k=0; k<dim; k++) {
+      printf("%d M1 : %lf - ",k, rag->M[i].M1[k]);
+      printf("M2 : %lf\n",rag->M[i].M2[k]);
+    }
+  }
 
+  /*extern*/ double error; //extern?
+  int b1, b2;
+  error = RAG_give_closest_region(*rag, &b1, &b2);
+  printf("\nAugmentation de l'erreur de partition : %lf\n",error);
+  printf("Blocks à fusioner: %d %d\n\n",b1,b2);
+
+
+  return 0;
 }

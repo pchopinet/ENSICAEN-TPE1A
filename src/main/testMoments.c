@@ -23,11 +23,17 @@
 int main(){
   image im=FAIRE_image();
   image_charger(im,"../../img/lenna.ppm");
+
+  int i;
+  int n = 2;
+  int m = 2;
   int M0 = 0;
+  double M1[3] = {0,0,0};
   double M2[3] = {0,0,0};
-  double M3[3] = {0,0,0};
-  give_moments(im,1,500,500,&M0,M2,M3);
-  printf("%d\n",M0);
-  printf("%f\n",M2[0]);
-  printf("%f\n",M3[0]);
+  for (i=0; i<n*m; i++) {
+    give_moments(im,i,n,m,&M0,M1,M2);
+    printf("%d :\nM0 : %d\n",i,M0);
+    printf("M1 : %f\n",M1[0]);
+    printf("M2 : %f\n\n",M2[0]);
+  }
 }
