@@ -51,4 +51,7 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
-bin/*
+bin/main/test*
+bin/image/test*
+bin/image/main*
+bin/main/main*
