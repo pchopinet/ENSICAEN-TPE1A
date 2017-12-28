@@ -240,8 +240,7 @@ void RAG_merge_region(RAG * rag, int i, int j){
     cj = cj->next;
   }
   printf("\n");
-  fusion->next = NULL;
-
+  fusion = NULL;
 
   rag->neighbors[j] = *debut;
 

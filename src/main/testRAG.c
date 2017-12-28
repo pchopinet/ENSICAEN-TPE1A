@@ -80,7 +80,9 @@ int main(){
   Cellule * cj = &(rag->neighbors[5]);
   while(cj!=NULL){
     printf("%d ", cj->block);
+    fflush(stdout);
     cj = cj->next;
+    sleep(1);
   }
   return 0;
 }
