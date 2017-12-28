@@ -27,8 +27,6 @@ typedef struct moments{
   double M2[3];
 } Moments;
 
-typedef struct cellule_t Cellule;
-
 struct cellule_t{
   int block;
   Cellule* next;
@@ -176,4 +174,75 @@ extern double RAG_give_closest_region(RAG rag, int* b1, int* b2) {
     }
   }
   return errorMin;
+}
+
+void RAG_merge_region(RAG * rag, int i, int j){
+  int dim = image_give_dim(rag->im);
+  int k;
+
+  rag->father[i] = j;
+
+  //update moments
+  printf("Fusion moments\n");
+  rag->M[j].M0 += rag->M[i].M0;
+  for(k=0;k<dim;k++){
+    rag->M[j].M1[k] += rag->M[i].M1[k];
+    rag->M[j].M2[k] += rag->M[i].M2[k];
+  }
+
+  //merge neighbors
+  printf("Fusion voisins\n");
+  Cellule * ci = &(rag->neighbors[i]);
+  Cellule * cj = &(rag->neighbors[j]);
+
+  Cellule * debut = malloc(sizeof(Cellule));
+  Cellule * fusion = debut;
+  *fusion = rag->neighbors[j];
+
+
+  while(ci!=NULL && cj!=NULL){
+    if(ci->block<debut->block){
+      ci = ci->next;//pour eliminer les block inferieur à j
+    }else if(ci->block<cj->block){
+      fusion->block = ci->block;
+      fusion->next = malloc(sizeof(Cellule));
+      fusion = fusion->next;
+      printf("%d ", ci->block);
+      ci = ci->next;
+    }else if(ci->block>cj->block){
+      fusion->block = cj->block;
+      fusion->next = malloc(sizeof(Cellule));
+      fusion = fusion->next;
+      printf("%d ", cj->block);
+      cj = cj->next;
+    }else{
+      fusion->block = ci->block;
+      fusion->next = malloc(sizeof(Cellule));
+      fusion = fusion->next;
+      printf("%d ", ci->block);
+      ci = ci->next;
+      cj = cj->next;
+    }
+  }
+
+  while(ci!=NULL){
+    fusion->block = ci->block;
+    fusion->next = malloc(sizeof(Cellule));
+    fusion = fusion->next;
+    printf("%d ", ci->block);
+    ci = ci->next;
+  }
+  while(cj!=NULL){
+    fusion->block = cj->block;
+    fusion->next = malloc(sizeof(Cellule));
+    fusion = fusion->next;
+    printf("%d ", cj->block);
+    cj = cj->next;
+  }
+  printf("\n");
+  fusion->next = NULL;
+
+
+  rag->neighbors[j] = *debut;
+
 }

@@ -20,6 +20,8 @@
 
 #include <RAG.h>
 #include <moments.h>
+
+
 typedef struct moments{
   int M0;
   double M1[3];
@@ -68,12 +70,17 @@ int main(){
     }
   }
 
-  /*extern*/ double error; //extern?
+  double error;
   int b1, b2;
   error = RAG_give_closest_region(*rag, &b1, &b2);
   printf("\nAugmentation de l'erreur de partition : %lf\n",error);
   printf("Blocks à fusioner: %d %d\n\n",b1,b2);
 
-
+  RAG_merge_region(rag,4,5);
+  Cellule * cj = &(rag->neighbors[5]);
+  while(cj!=NULL){
+    printf("%d ", cj->block);
+    cj = cj->next;
+  }
   return 0;
 }
