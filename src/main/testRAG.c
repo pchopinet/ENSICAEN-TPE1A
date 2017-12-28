@@ -76,8 +76,9 @@ int main(){
   printf("\nAugmentation de l'erreur de partition : %lf\n",error);
   printf("Blocks à fusioner: %d %d\n\n",b1,b2);
 
-  RAG_merge_region(rag,4,5);
-  Cellule * cj = &(rag->neighbors[5]);
+  RAG_merge_region(rag,5,7);
+
+  Cellule * cj = &(rag->neighbors[7]);
   while(cj!=NULL){
     printf("%d ", cj->block);
     fflush(stdout);

@@ -176,22 +176,18 @@ extern double RAG_give_closest_region(RAG rag, int* b1, int* b2) {
   return errorMin;
 }
 
-void RAG_merge_region(RAG * rag, int i, int j){
+static void RAG_merge_moments(RAG * rag, int i, int j){
   int dim = image_give_dim(rag->im);
   int k;
-
-  rag->father[i] = j;
-
   //update moments
-  printf("Fusion moments\n");
   rag->M[j].M0 += rag->M[i].M0;
   for(k=0;k<dim;k++){
     rag->M[j].M1[k] += rag->M[i].M1[k];
     rag->M[j].M2[k] += rag->M[i].M2[k];
   }
+}
+static void RAG_merge_neighbors(RAG * rag, int i, int j){
 
-  //merge neighbors
-  printf("Fusion voisins\n");
   Cellule * ci = &(rag->neighbors[i]);
   Cellule * cj = &(rag->neighbors[j]);
 
@@ -200,53 +196,61 @@ void RAG_merge_region(RAG * rag, int i, int j){
   *fusion = rag->neighbors[j];
 
 
-  while(ci!=NULL && cj!=NULL){
+  while(ci!=NULL && cj!=NULL){//fusion des deux listes dans une troisieme
     if(ci->block<debut->block){
       ci = ci->next;//pour eliminer les block inferieur à j
     }else if(ci->block<cj->block){
       fusion->block = ci->block;
       fusion->next = malloc(sizeof(Cellule));
       fusion = fusion->next;
-      printf("%d ", ci->block);
+      printf("Ci : %d\n", ci->block);
       ci = ci->next;
     }else if(ci->block>cj->block){
       fusion->block = cj->block;
       fusion->next = malloc(sizeof(Cellule));
       fusion = fusion->next;
-      printf("%d ", cj->block);
+      printf("Cj : %d\n", cj->block);
       cj = cj->next;
     }else{
       fusion->block = ci->block;
       fusion->next = malloc(sizeof(Cellule));
       fusion = fusion->next;
-      printf("%d ", ci->block);
+      printf("ij : %d\n", ci->block);
       ci = ci->next;
       cj = cj->next;
     }
   }
+
   //peut etre amelioré
   while(ci!=NULL){
     fusion->block = ci->block;
     if(ci->next!=NULL){
       fusion->next = malloc(sizeof(Cellule));
       fusion = fusion->next;
-    }else{
-      fusion->next = NULL;
     }
-    printf("%d ", ci->block);
+    printf("Ci : %d\n", ci->block);
     ci = ci->next;
   }
+
   while(cj!=NULL){
     fusion->block = cj->block;
     if(cj->next!=NULL){
       fusion->next = malloc(sizeof(Cellule));
       fusion = fusion->next;
-    }else{
-      fusion->next = NULL;
     }
-    printf("%d ", cj->block);
+    printf("Cj : %d\n", cj->block);
     cj = cj->next;
   }
+
+  fusion->next = NULL;
   printf("\n");
+
+  rag->neighbors[j] = *debut;
+}
+
+void RAG_merge_region(RAG * rag, int i, int j){
+  rag->father[i] = j;
+  RAG_merge_moments(rag,i,j);
+  RAG_merge_neighbors(rag,i,j);
 
 }
