@@ -224,24 +224,29 @@ void RAG_merge_region(RAG * rag, int i, int j){
       cj = cj->next;
     }
   }
-
+  //peut etre amelioré
   while(ci!=NULL){
     fusion->block = ci->block;
-    fusion->next = malloc(sizeof(Cellule));
-    fusion = fusion->next;
+    if(ci->next!=NULL){
+      fusion->next = malloc(sizeof(Cellule));
+      fusion = fusion->next;
+    }else{
+      fusion->next = NULL;
+    }
     printf("%d ", ci->block);
     ci = ci->next;
   }
   while(cj!=NULL){
     fusion->block = cj->block;
-    fusion->next = malloc(sizeof(Cellule));
-    fusion = fusion->next;
+    if(cj->next!=NULL){
+      fusion->next = malloc(sizeof(Cellule));
+      fusion = fusion->next;
+    }else{
+      fusion->next = NULL;
+    }
     printf("%d ", cj->block);
     cj = cj->next;
   }
   printf("\n");
-  fusion = NULL;
-
-  rag->neighbors[j] = *debut;
 
 }
