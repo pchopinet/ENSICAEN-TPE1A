@@ -213,8 +213,11 @@ static void RAG_merge_neighbors(RAG * rag, int i, int j){
       cj = cj->next;
     }else{
       fusion->block = ci->block;
-      fusion->next = malloc(sizeof(Cellule));
-      fusion = fusion->next;
+      if (!(ci->next==NULL || cj->next==NULL)) {
+        printf("test\n");
+        fusion->next = malloc(sizeof(Cellule));
+        fusion = fusion->next;
+      }
       printf("ij : %d\n", ci->block);
       ci = ci->next;
       cj = cj->next;
@@ -249,8 +252,9 @@ static void RAG_merge_neighbors(RAG * rag, int i, int j){
 }
 
 void RAG_merge_region(RAG * rag, int i, int j){
-  rag->father[i] = j;
   RAG_merge_moments(rag,i,j);
   RAG_merge_neighbors(rag,i,j);
 
+
+  rag->father[i] = j;
 }
