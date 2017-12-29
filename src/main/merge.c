@@ -30,5 +30,4 @@ void perform_merge(RAG* rag,double error_threshold){
     RAG_merge_region(rag,b1,b2);
   }
   RAG_give_closest_region(rag,&b1,&b2);
-
 }

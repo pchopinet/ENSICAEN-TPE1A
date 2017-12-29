@@ -7,7 +7,7 @@ PATHLIB=../../lib/
 PATHOBJ=../../obj/main/
 PATHBIN=../../bin/main/
 
-all: test
+all: test main
 
 test: testMoments testRAG testMerge
 
@@ -20,11 +20,13 @@ testRAG: $(PATHOBJ)RAG.o $(PATHOBJ)testRAG.o $(PATHOBJ)moments.o
 testMoments: $(PATHOBJ)testMoments.o $(PATHOBJ)moments.o
 	$(CC) -o $(PATHBIN)$@ $^ $(LDFLAGS) $(PATHLIB)libimage.a
 
-testMerge: $(PATHOBJ)merge.o $(PATHOBJ)testMerge.o
+testMerge: $(PATHOBJ)merge.o $(PATHOBJ)testMerge.o $(PATHOBJ)RAG.o $(PATHOBJ)moments.o
 	$(CC) -o $(PATHBIN)$@ $^ $(LDFLAGS) $(PATHLIB)libimage.a
 
+$(PATHOBJ)merge.o: $(PATHOBJ)RAG.o
+
 $(PATHOBJ)%.o: %.c ../../include/*.h
-	$(CC) $^ $(CFLAGS) -c -o $@
+	$(CC) $< $(CFLAGS) -c -o $@
 
 clean:
 	rm -rf $(PATHOBJ)*.o
