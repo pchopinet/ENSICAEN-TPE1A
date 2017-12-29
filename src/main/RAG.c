@@ -135,8 +135,12 @@ extern RAG* create_RAG(image im, int n, int m) {
   return rag;
 }
 
-extern double RAG_give_closest_region(RAG rag, int* b1, int* b2) {
-  assert(rag.nb_blocks>1);
+extern double get_error(RAG * rag){
+  return rag->erreur_partition;
+}
+
+extern double RAG_give_closest_region(RAG * rag, int* b1, int* b2) {
+  assert(rag->nb_blocks>1);
 
   int i, k, n;
   double error;
@@ -146,21 +150,21 @@ extern double RAG_give_closest_region(RAG rag, int* b1, int* b2) {
   Cellule* tmp;
   int M0, M0n;
   double *M1, *M1n;
-  int dim = image_give_dim(rag.im);
+  int dim = image_give_dim(rag->im);
 
-  for (i=0; i<rag.nb_blocks; i++) {
-    if (rag.father[i]==i) {
-      M0 = rag.M[i].M0;
-      M1 = rag.M[i].M1;
-      cel = rag.neighbors[i].next;
+  for (i=0; i<rag->nb_blocks; i++) {
+    if (rag->father[i]==i) {
+      M0 = rag->M[i].M0;
+      M1 = rag->M[i].M1;
+      cel = rag->neighbors[i].next;
 
       while(cel!=NULL){
 
         error = 0;
         fflush(stdout);
         n = cel->block;
-        if (rag.father[n]!=n) {
-          cel->block = rag.father[n];
+        if (rag->father[n]!=n) {
+          cel->block = rag->father[n];
           tmp = cel;
           printf("%d %p\n",tmp->block,tmp->next);
 
@@ -178,8 +182,8 @@ extern double RAG_give_closest_region(RAG rag, int* b1, int* b2) {
           }
         }
 
-        M0n = rag.M[n].M0;
-        M1n = rag.M[n].M1;
+        M0n = rag->M[n].M0;
+        M1n = rag->M[n].M1;
         for (k=0; k<dim; k++) {
           error += (M1[k]/M0-M1n[k]/M0n)*(M1[k]/M0-M1n[k]/M0n);
         }
@@ -284,8 +288,6 @@ static void RAG_merge_neighbors(RAG * rag, int i, int j){
     }
   }*/
 }
-
-
 
 void RAG_merge_region(RAG * rag, int i, int j){
 

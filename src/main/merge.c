@@ -11,15 +11,24 @@
 
 /**
  * @author Pierre Chopinet <pierre.chopinet@ecole.ensicaen.fr>
- * @version 0.0.1 / 2017-12-17
+ * @version 0.0.1 / 2017-12-29
  */
 
 /**
- * @file testRAG.c
+ * @file merge.c
  */
 
+#include <merge.h>
+#include <RAG.h>
 
-int main(int argc, char const *argv[]) {
+void perform_merge(RAG* rag,double error_threshold){
+  int b1;
+  int b2;
+  double error = get_error(rag);
+  while (error>error_threshold){
+    RAG_give_closest_region(rag,&b1,&b2);
+    RAG_merge_region(rag,b1,b2);
+  }
+  RAG_give_closest_region(rag,&b1,&b2);
 
-  return 0;
 }

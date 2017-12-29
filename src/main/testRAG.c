@@ -72,13 +72,13 @@ int main() {
 
   double error;
   int b1, b2;
-  error = RAG_give_closest_region(*rag, &b1, &b2);
+  error = RAG_give_closest_region(rag, &b1, &b2);
   printf("\nAugmentation de l'erreur de partition : %lf\n",error);
   printf("Blocks à fusioner: %d %d\n\n",b1,b2);
 
   RAG_merge_region(rag,3,5);
   printf("\n");
-  error = RAG_give_closest_region(*rag, &b1, &b2);
+  error = RAG_give_closest_region(rag, &b1, &b2);
   for (i=0; i<rag->nb_blocks; i++) {
     printf("Block : %d\nListe voisins : ",rag->father[i]);
     printf("%d ",rag->neighbors[i].block);
@@ -91,7 +91,7 @@ int main() {
   }
   RAG_merge_region(rag,1,5);
 
-  error = RAG_give_closest_region(*rag, &b1, &b2);
+  error = RAG_give_closest_region(rag, &b1, &b2);
   for (i=0; i<rag->nb_blocks; i++) {
     printf("Block : %d\nListe voisins : ",rag->father[i]);
     printf("%d ",rag->neighbors[i].block);

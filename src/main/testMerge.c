@@ -11,15 +11,18 @@
 
 /**
  * @author Pierre Chopinet <pierre.chopinet@ecole.ensicaen.fr>
- * @version 0.0.1 / 2017-12-17
+ * @version 0.0.1 / 2017-12-29
  */
 
 /**
- * @file testRAG.c
+ * @file testMerge.c
  */
 
+#include <merge.h>
 
 int main(int argc, char const *argv[]) {
-
+  image im=FAIRE_image();
+  RAG* rag = create_RAG(im,2,4);
+  perform_merge(rag,10000);
   return 0;
 }

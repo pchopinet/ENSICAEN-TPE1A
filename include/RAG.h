@@ -28,8 +28,10 @@ typedef struct cellule_t Cellule;
 
 extern RAG* create_RAG(image im, int n, int m);
 
-extern double RAG_give_closest_region(RAG, int*, int*);
+extern double RAG_give_closest_region(RAG* rag, int*, int*);
 
 void RAG_merge_region(RAG * rag, int i, int j);
+
+double get_error(RAG * rag);
 
 #endif
