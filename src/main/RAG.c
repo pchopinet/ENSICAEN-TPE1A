@@ -143,6 +143,7 @@ extern double RAG_give_closest_region(RAG rag, int* b1, int* b2) {
   double errorMin;
   errorMin = DBL_MAX;
   Cellule* cel;
+  Cellule* tmp;
   int M0, M0n;
   double *M1, *M1n;
   int dim = image_give_dim(rag.im);
@@ -153,26 +154,50 @@ extern double RAG_give_closest_region(RAG rag, int* b1, int* b2) {
       M1 = rag.M[i].M1;
       cel = rag.neighbors[i].next;
 
-      while (cel!=NULL) {
+      while(cel!=NULL){
+
         error = 0;
+        printf("Coucou\n");
+        fflush(stdout);
         n = cel->block;
-        if (rag.father[n]==n) {
-          M0n = rag.M[n].M0;
-          M1n = rag.M[n].M1;
-          for (k=0; k<dim; k++) {
-            error += (M1[k]/M0-M1n[k]/M0n)*(M1[k]/M0-M1n[k]/M0n);
+        if (rag.father[n]!=n) {
+          printf("fuck\n");
+          cel->block = rag.father[n];
+          tmp = cel;
+          printf("%d %p\n",tmp->block,tmp->next);
+          printf("fuck2\n");
+
+          fflush(stdout);
+
+          while (tmp->next!=NULL && tmp->block>tmp->next->block) {
+            printf("a");
+            fflush(stdout);
+            n = tmp->block;
+            tmp->block = tmp->next->block;
+            tmp->next->block = n;
+            tmp = tmp->next;
           }
-          error = error*M0*M0n/(M0+M0n);
-          if (error<errorMin) {
-            errorMin = error;
-            *b1 = i;
-            *b2 = n;
+          if (tmp->next!=NULL && tmp->block==tmp->next->block) {
+            tmp->next = tmp->next->next;
           }
+        }
+
+        M0n = rag.M[n].M0;
+        M1n = rag.M[n].M1;
+        for (k=0; k<dim; k++) {
+          error += (M1[k]/M0-M1n[k]/M0n)*(M1[k]/M0-M1n[k]/M0n);
+        }
+        error = error*M0*M0n/(M0+M0n);
+        if (error<errorMin) {
+          errorMin = error;
+          *b1 = i;
+          *b2 = n;
         }
         cel = cel->next;
       }
     }
   }
+
   return errorMin;
 }
 
@@ -186,8 +211,9 @@ static void RAG_merge_moments(RAG * rag, int i, int j){
     rag->M[j].M2[k] += rag->M[i].M2[k];
   }
 }
-static void RAG_merge_neighbors(RAG * rag, int i, int j){
 
+static void RAG_merge_neighbors(RAG * rag, int i, int j){
+  //int k;
   Cellule * ci = &(rag->neighbors[i]);
   Cellule * cj = &(rag->neighbors[j]);
 
@@ -196,22 +222,22 @@ static void RAG_merge_neighbors(RAG * rag, int i, int j){
   *fusion = rag->neighbors[j];
 
 
-  while(ci!=NULL && cj!=NULL){//fusion des deux listes dans une troisieme
-    if(ci->block<debut->block){
-      ci = ci->next;//pour eliminer les block inferieur à j
-    }else if(ci->block<cj->block){
+  while(ci!=NULL && cj!=NULL) { //fusion des deux listes dans une troisieme
+    if(ci->block<debut->block) {
+      ci = ci->next;
+    } else if(ci->block<cj->block){
       fusion->block = ci->block;
       fusion->next = malloc(sizeof(Cellule));
       fusion = fusion->next;
       printf("Ci : %d\n", ci->block);
       ci = ci->next;
-    }else if(ci->block>cj->block){
+    } else if(ci->block>cj->block){
       fusion->block = cj->block;
       fusion->next = malloc(sizeof(Cellule));
       fusion = fusion->next;
       printf("Cj : %d\n", cj->block);
       cj = cj->next;
-    }else{
+    } else {
       fusion->block = ci->block;
       if (!(ci->next==NULL || cj->next==NULL)) {
         printf("test\n");
@@ -224,7 +250,6 @@ static void RAG_merge_neighbors(RAG * rag, int i, int j){
     }
   }
 
-  //peut etre amelioré
   while(ci!=NULL){
     fusion->block = ci->block;
     if(ci->next!=NULL){
@@ -249,12 +274,39 @@ static void RAG_merge_neighbors(RAG * rag, int i, int j){
   printf("\n");
 
   rag->neighbors[j] = *debut;
+  rag->neighbors[i].next = NULL;
+
+  Cellule* cell;
+
+  /*for (k=0; k<rag->nb_blocks; k++) {
+    cell = rag->neighbors[k].next;
+    while (cell!=NULL) {
+      if (cell->block==i) {
+        cell->block = j;
+      }
+      cell = cell->next;
+    }
+  }*/
 }
 
+
+
 void RAG_merge_region(RAG * rag, int i, int j){
+  int k;
+  double error = 0;
+  int dim = image_give_dim(rag->im);
   RAG_merge_moments(rag,i,j);
   RAG_merge_neighbors(rag,i,j);
 
+  int M0 = rag->M[i].M0;
+  double* M1 = rag->M[i].M1;
+  int M0j = rag->M[j].M0;
+  double* M1j = rag->M[j].M1;
+  for (k=0; k<dim; k++) {
+    error += (M1[k]/M0-M1j[k]/M0j)*(M1[k]/M0-M1j[k]/M0j);
+  }
+  error = error*M0*M0j/(M0+M0j);
+  rag->erreur_partition += error;
 
   rag->father[i] = j;
 }

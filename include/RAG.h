@@ -31,4 +31,5 @@ extern RAG* create_RAG(image im, int n, int m);
 extern double RAG_give_closest_region(RAG, int*, int*);
 
 void RAG_merge_region(RAG * rag, int i, int j);
+
 #endif
