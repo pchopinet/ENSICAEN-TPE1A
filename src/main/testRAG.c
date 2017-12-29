@@ -76,31 +76,10 @@ int main() {
   printf("\nAugmentation de l'erreur de partition : %lf\n",error);
   printf("Blocks à fusioner: %d %d\n\n",b1,b2);
 
-  RAG_merge_region(rag,4,5);
-
-  Cellule * cj = &(rag->neighbors[5]);
-  while(cj!=NULL){
-    printf("%d ", cj->block);
-    fflush(stdout);
-    cj = cj->next;
-  }
-  printf("\n");
-
   RAG_merge_region(rag,3,5);
-
-  cj = &(rag->neighbors[5]);
-  while(cj!=NULL){
-    printf("%d ", cj->block);
-    fflush(stdout);
-    cj = cj->next;
-  }
   printf("\n");
-
   error = RAG_give_closest_region(*rag, &b1, &b2);
-  printf("\nAugmentation de l'erreur de partition : %lf\n",error);
-  printf("Blocks à fusioner: %d %d\n\n",b1,b2);
   for (i=0; i<rag->nb_blocks; i++) {
-    printf("\n");
     printf("Block : %d\nListe voisins : ",rag->father[i]);
     printf("%d ",rag->neighbors[i].block);
     cel = rag->neighbors[i].next;
@@ -109,14 +88,21 @@ int main() {
       cel = cel->next;
     }
     printf("\n");
-    int dim = image_give_dim(im);
-    printf("M0 : %d\n",rag->M[i].M0);
-    for (k=0; k<dim; k++) {
-      printf("%d M1 : %lf - ",k, rag->M[i].M1[k]);
-      printf("M2 : %lf\n",rag->M[i].M2[k]);
-    }
   }
-  
+  RAG_merge_region(rag,1,5);
+
+  error = RAG_give_closest_region(*rag, &b1, &b2);
+  for (i=0; i<rag->nb_blocks; i++) {
+    printf("Block : %d\nListe voisins : ",rag->father[i]);
+    printf("%d ",rag->neighbors[i].block);
+    cel = rag->neighbors[i].next;
+    while (cel!=NULL) {
+      printf("%d ",cel->block);
+      cel = cel->next;
+    }
+    printf("\n");
+  }
+
 
   return 0;
 }

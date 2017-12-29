@@ -157,20 +157,16 @@ extern double RAG_give_closest_region(RAG rag, int* b1, int* b2) {
       while(cel!=NULL){
 
         error = 0;
-        printf("Coucou\n");
         fflush(stdout);
         n = cel->block;
         if (rag.father[n]!=n) {
-          printf("fuck\n");
           cel->block = rag.father[n];
           tmp = cel;
           printf("%d %p\n",tmp->block,tmp->next);
-          printf("fuck2\n");
 
           fflush(stdout);
 
           while (tmp->next!=NULL && tmp->block>tmp->next->block) {
-            printf("a");
             fflush(stdout);
             n = tmp->block;
             tmp->block = tmp->next->block;
@@ -221,7 +217,7 @@ static void RAG_merge_neighbors(RAG * rag, int i, int j){
   Cellule * fusion = debut;
   *fusion = rag->neighbors[j];
 
-
+  printf("debut block : %d\n",debut->block);
   while(ci!=NULL && cj!=NULL) { //fusion des deux listes dans une troisieme
     if(ci->block<debut->block) {
       ci = ci->next;
@@ -239,11 +235,11 @@ static void RAG_merge_neighbors(RAG * rag, int i, int j){
       cj = cj->next;
     } else {
       fusion->block = ci->block;
-      if (!(ci->next==NULL || cj->next==NULL)) {
+      //if (!(ci->next==NULL || cj->next==NULL)) {
         printf("test\n");
         fusion->next = malloc(sizeof(Cellule));
         fusion = fusion->next;
-      }
+      //}
       printf("ij : %d\n", ci->block);
       ci = ci->next;
       cj = cj->next;
@@ -292,6 +288,9 @@ static void RAG_merge_neighbors(RAG * rag, int i, int j){
 
 
 void RAG_merge_region(RAG * rag, int i, int j){
+
+  assert(i<j);
+
   int k;
   double error = 0;
   int dim = image_give_dim(rag->im);
