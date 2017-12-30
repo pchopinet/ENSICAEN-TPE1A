@@ -22,7 +22,7 @@
 
 #include <RAG.h>
 
-void perform_merge(RAG * rag,double error_threshold);
+void perform_merge(RAG * rag,long double error_threshold);
 
 image create_output_image(RAG * rag);
 

@@ -32,6 +32,6 @@ extern double RAG_give_closest_region(RAG* rag, int*, int*);
 
 void RAG_merge_region(RAG * rag, int i, int j);
 
-double get_error(RAG * rag);
+extern long double get_error(RAG * rag);
 
 #endif

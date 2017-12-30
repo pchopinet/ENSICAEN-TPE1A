@@ -76,7 +76,7 @@ int main() {
   printf("\nAugmentation de l'erreur de partition : %lf\n",error);
   printf("Blocks à fusioner: %d %d\n\n",b1,b2);
 
-  RAG_merge_region(rag,3,5);
+  RAG_merge_region(rag,4,5);
   printf("\n");
   error = RAG_give_closest_region(rag, &b1, &b2);
   for (i=0; i<rag->nb_blocks; i++) {

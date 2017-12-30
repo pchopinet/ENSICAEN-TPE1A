@@ -21,8 +21,9 @@
 #include <merge.h>
 
 int main(int argc, char const *argv[]) {
-  image im=FAIRE_image();
+  image im = FAIRE_image();
+  image_charger(im,"../../img/lenna.ppm");
   RAG* rag = create_RAG(im,2,4);
-  perform_merge(rag,10000);
+  perform_merge(rag,0);
   return 0;
 }

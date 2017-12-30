@@ -135,7 +135,7 @@ extern RAG* create_RAG(image im, int n, int m) {
   return rag;
 }
 
-extern double get_error(RAG * rag){
+extern long double get_error(RAG * rag){
   return rag->erreur_partition;
 }
 
@@ -159,19 +159,16 @@ extern double RAG_give_closest_region(RAG * rag, int* b1, int* b2) {
       cel = rag->neighbors[i].next;
 
       while(cel!=NULL){
-
         error = 0;
-        fflush(stdout);
         n = cel->block;
+        printf("%d \n",n);
+        fflush(stdout);
         if (rag->father[n]!=n) {
           cel->block = rag->father[n];
           tmp = cel;
           printf("%d %p\n",tmp->block,tmp->next);
-
           fflush(stdout);
-
           while (tmp->next!=NULL && tmp->block>tmp->next->block) {
-            fflush(stdout);
             n = tmp->block;
             tmp->block = tmp->next->block;
             tmp->next->block = n;
@@ -188,6 +185,7 @@ extern double RAG_give_closest_region(RAG * rag, int* b1, int* b2) {
           error += (M1[k]/M0-M1n[k]/M0n)*(M1[k]/M0-M1n[k]/M0n);
         }
         error = error*M0*M0n/(M0+M0n);
+
         if (error<errorMin) {
           errorMin = error;
           *b1 = i;
@@ -217,76 +215,94 @@ static void RAG_merge_neighbors(RAG * rag, int i, int j){
   Cellule * ci = &(rag->neighbors[i]);
   Cellule * cj = &(rag->neighbors[j]);
 
-  Cellule * debut = malloc(sizeof(Cellule));
-  Cellule * fusion = debut;
-  *fusion = rag->neighbors[j];
+  Cellule * temp1;
+  Cellule * temp2;
 
-  printf("debut block : %d\n",debut->block);
-  while(ci!=NULL && cj!=NULL) { //fusion des deux listes dans une troisieme
-    if(ci->block<debut->block) {
-      ci = ci->next;
-    } else if(ci->block<cj->block){
-      fusion->block = ci->block;
-      fusion->next = malloc(sizeof(Cellule));
-      fusion = fusion->next;
-      printf("Ci : %d\n", ci->block);
-      ci = ci->next;
-    } else if(ci->block>cj->block){
-      fusion->block = cj->block;
-      fusion->next = malloc(sizeof(Cellule));
-      fusion = fusion->next;
-      printf("Cj : %d\n", cj->block);
-      cj = cj->next;
-    } else {
-      fusion->block = ci->block;
-      //if (!(ci->next==NULL || cj->next==NULL)) {
-        printf("test\n");
-        fusion->next = malloc(sizeof(Cellule));
-        fusion = fusion->next;
-      //}
-      printf("ij : %d\n", ci->block);
-      ci = ci->next;
-      cj = cj->next;
-    }
-  }
 
-  while(ci!=NULL){
-    fusion->block = ci->block;
-    if(ci->next!=NULL){
-      fusion->next = malloc(sizeof(Cellule));
-      fusion = fusion->next;
+  while(ci!=NULL && cj!=NULL){
+    if(ci->block<=j){
+      ci = ci->next;
+    }else if(ci->block<cj->next->block){
+      temp1 = cj->next;
+      temp2 = ci->next;
+      cj->next = ci;
+      ci->next = temp1;//cj->next->next = temp1
+      ci = temp2;
     }
-    printf("Ci : %d\n", ci->block);
-    ci = ci->next;
-  }
-
-  while(cj!=NULL){
-    fusion->block = cj->block;
-    if(cj->next!=NULL){
-      fusion->next = malloc(sizeof(Cellule));
-      fusion = fusion->next;
-    }
-    printf("Cj : %d\n", cj->block);
     cj = cj->next;
   }
-
-  fusion->next = NULL;
-  printf("\n");
-
-  rag->neighbors[j] = *debut;
   rag->neighbors[i].next = NULL;
 
-  Cellule* cell;
-
-  /*for (k=0; k<rag->nb_blocks; k++) {
-    cell = rag->neighbors[k].next;
-    while (cell!=NULL) {
-      if (cell->block==i) {
-        cell->block = j;
-      }
-      cell = cell->next;
-    }
-  }*/
+  // Cellule * debut = malloc(sizeof(Cellule));
+  // Cellule * fusion = debut;
+  // *fusion = rag->neighbors[j];
+  //
+  // //printf("debut block : %d\n",debut->block);
+  // while(ci!=NULL && cj!=NULL) { //fusion des deux listes dans une troisieme
+  //   if(ci->block<debut->block) {
+  //     ci = ci->next;
+  //   } else if(ci->block<cj->block){
+  //     fusion->block = ci->block;
+  //     fusion->next = malloc(sizeof(Cellule));
+  //     fusion = fusion->next;
+  //     printf("Ci : %d\n", ci->block);
+  //     ci = ci->next;
+  //   } else if(ci->block>cj->block){
+  //     fusion->block = cj->block;
+  //     fusion->next = malloc(sizeof(Cellule));
+  //     fusion = fusion->next;
+  //     printf("Cj : %d\n", cj->block);
+  //     cj = cj->next;
+  //   } else {
+  //     fusion->block = ci->block;
+  //     //if (!(ci->next==NULL || cj->next==NULL)) {
+  //       printf("test\n");
+  //       fusion->next = malloc(sizeof(Cellule));
+  //       fusion = fusion->next;
+  //     //}
+  //     printf("ij : %d\n", ci->block);
+  //     ci = ci->next;
+  //     cj = cj->next;
+  //   }
+  // }
+  //
+  // while(ci!=NULL){
+  //   fusion->block = ci->block;
+  //   if(ci->next!=NULL){
+  //     fusion->next = malloc(sizeof(Cellule));
+  //     fusion = fusion->next;
+  //   }
+  //   printf("Ci : %d\n", ci->block);
+  //   ci = ci->next;
+  // }
+  //
+  // while(cj!=NULL){
+  //   fusion->block = cj->block;
+  //   if(cj->next!=NULL){
+  //     fusion->next = malloc(sizeof(Cellule));
+  //     fusion = fusion->next;
+  //   }
+  //   printf("Cj : %d\n", cj->block);
+  //   cj = cj->next;
+  // }
+  //
+  // fusion->next = NULL;
+  // printf("\n");
+  //
+  // rag->neighbors[j] = *debut;
+  // rag->neighbors[i].next = NULL;
+  //
+  // Cellule* cell;
+  //
+  // /*for (k=0; k<rag->nb_blocks; k++) {
+  //   cell = rag->neighbors[k].next;
+  //   while (cell!=NULL) {
+  //     if (cell->block==i) {
+  //       cell->block = j;
+  //     }
+  //     cell = cell->next;
+  //   }
+  // }*/
 }
 
 void RAG_merge_region(RAG * rag, int i, int j){

@@ -7,7 +7,7 @@ PATHLIB=../../lib/
 PATHOBJ=../../obj/main/
 PATHBIN=../../bin/main/
 
-all: test main
+all: test
 
 test: testMoments testRAG testMerge
 
