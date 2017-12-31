@@ -34,4 +34,5 @@ void RAG_merge_region(RAG * rag, int i, int j);
 
 extern long double get_error(RAG * rag);
 
+extern void RAG_normalize_parents(RAG* rag);
 #endif

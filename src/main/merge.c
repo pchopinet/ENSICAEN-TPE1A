@@ -31,7 +31,6 @@ void perform_merge(RAG* rag,long double error_threshold){
     RAG_give_closest_region(rag,&b1,&b2);
     printf("Blocks : %d %d\n",b1,b2);
     RAG_merge_region(rag,b1,b2);
-    printf("sjkdl\n");
     error = get_error(rag);
     nb_merge++;
   }

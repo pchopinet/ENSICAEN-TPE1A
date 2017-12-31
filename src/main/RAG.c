@@ -327,3 +327,14 @@ void RAG_merge_region(RAG * rag, int i, int j){
 
   rag->father[i] = j;
 }
+
+extern void RAG_normalize_parents(RAG* rag){
+  int k;
+  for (k=rag->nb_blocks;k>=0;k--){
+    rag->father[k] = rag->father[rag->father[k]];
+  }
+}
+
+extern RAG_give_mean_color(RAG * rag, int block, int* colMoy){
+  
+}
