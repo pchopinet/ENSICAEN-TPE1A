@@ -336,5 +336,9 @@ extern void RAG_normalize_parents(RAG* rag){
 }
 
 extern RAG_give_mean_color(RAG * rag, int block, int* colMoy){
-  
+  int dim = image_give_dim(rag->im);
+  int i;
+  for (i=0;i<dim;i++){
+    colMoy[i] = rag->M[block].M1[i]/rag->M[block].M0;
+  }
 }
