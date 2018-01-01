@@ -29,7 +29,7 @@ void perform_merge(RAG* rag,long double error_threshold){
   long double error_limit = error * error_threshold/100;
   //for(int i=0;i<4050;i++){
   while (error<error_limit){
-    printf("Erreur : %Lf\n", error);
+    //printf("Erreur : %Lf\n", error);
     RAG_give_closest_region(rag,&b1,&b2);
     //printf("Blocks : %d %d\n",b1,b2);
     if (b1==b1_old && b2 == b2_old) {
