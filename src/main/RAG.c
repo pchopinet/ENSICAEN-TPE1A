@@ -34,7 +34,7 @@ struct cellule_t{
 
 struct RAG_t{
   image im;
-  int nb_blocks;
+  int nb_blocks, n, m;
   long double erreur_partition;
   Moments* M;
   int * father;
@@ -128,6 +128,8 @@ extern RAG* create_RAG(image im, int n, int m) {
   RAG * rag = malloc(sizeof(RAG));
   rag->im = im;
   rag->nb_blocks = n*m;
+  rag->n = n;
+  rag->m = m;
   init_moments_priv(rag, n, m);
   init_father_priv(rag);
   init_neighbors_priv(rag, n, m);
@@ -161,13 +163,13 @@ extern double RAG_give_closest_region(RAG * rag, int* b1, int* b2) {
       while(cel!=NULL){
         error = 0;
         n = cel->block;
-        printf("%d \n",n);
-        fflush(stdout);
+        //printf("%d \n",n);
+        //fflush(stdout);
         if (rag->father[n]!=n) {
           cel->block = rag->father[n];
           tmp = cel;
-          printf("%d %p\n",tmp->block,tmp->next);
-          fflush(stdout);
+          //printf("%d %p\n",tmp->block,tmp->next);
+          //fflush(stdout);
           while (tmp->next!=NULL && tmp->block>tmp->next->block) {
             n = tmp->block;
             tmp->block = tmp->next->block;
@@ -222,7 +224,7 @@ static void RAG_merge_neighbors(RAG * rag, int i, int j){
   while(ci!=NULL && cj!=NULL){
     if(ci->block<=j){
       ci = ci->next;
-    }else if(ci->block<cj->next->block){
+    }else if(cj->next !=NULL && ci->block<cj->next->block){
       temp1 = cj->next;
       temp2 = ci->next;
       cj->next = ci;
@@ -232,77 +234,6 @@ static void RAG_merge_neighbors(RAG * rag, int i, int j){
     cj = cj->next;
   }
   rag->neighbors[i].next = NULL;
-
-  // Cellule * debut = malloc(sizeof(Cellule));
-  // Cellule * fusion = debut;
-  // *fusion = rag->neighbors[j];
-  //
-  // //printf("debut block : %d\n",debut->block);
-  // while(ci!=NULL && cj!=NULL) { //fusion des deux listes dans une troisieme
-  //   if(ci->block<debut->block) {
-  //     ci = ci->next;
-  //   } else if(ci->block<cj->block){
-  //     fusion->block = ci->block;
-  //     fusion->next = malloc(sizeof(Cellule));
-  //     fusion = fusion->next;
-  //     printf("Ci : %d\n", ci->block);
-  //     ci = ci->next;
-  //   } else if(ci->block>cj->block){
-  //     fusion->block = cj->block;
-  //     fusion->next = malloc(sizeof(Cellule));
-  //     fusion = fusion->next;
-  //     printf("Cj : %d\n", cj->block);
-  //     cj = cj->next;
-  //   } else {
-  //     fusion->block = ci->block;
-  //     //if (!(ci->next==NULL || cj->next==NULL)) {
-  //       printf("test\n");
-  //       fusion->next = malloc(sizeof(Cellule));
-  //       fusion = fusion->next;
-  //     //}
-  //     printf("ij : %d\n", ci->block);
-  //     ci = ci->next;
-  //     cj = cj->next;
-  //   }
-  // }
-  //
-  // while(ci!=NULL){
-  //   fusion->block = ci->block;
-  //   if(ci->next!=NULL){
-  //     fusion->next = malloc(sizeof(Cellule));
-  //     fusion = fusion->next;
-  //   }
-  //   printf("Ci : %d\n", ci->block);
-  //   ci = ci->next;
-  // }
-  //
-  // while(cj!=NULL){
-  //   fusion->block = cj->block;
-  //   if(cj->next!=NULL){
-  //     fusion->next = malloc(sizeof(Cellule));
-  //     fusion = fusion->next;
-  //   }
-  //   printf("Cj : %d\n", cj->block);
-  //   cj = cj->next;
-  // }
-  //
-  // fusion->next = NULL;
-  // printf("\n");
-  //
-  // rag->neighbors[j] = *debut;
-  // rag->neighbors[i].next = NULL;
-  //
-  // Cellule* cell;
-  //
-  // /*for (k=0; k<rag->nb_blocks; k++) {
-  //   cell = rag->neighbors[k].next;
-  //   while (cell!=NULL) {
-  //     if (cell->block==i) {
-  //       cell->block = j;
-  //     }
-  //     cell = cell->next;
-  //   }
-  // }*/
 }
 
 void RAG_merge_region(RAG * rag, int i, int j){
@@ -335,10 +266,23 @@ extern void RAG_normalize_parents(RAG* rag){
   }
 }
 
-extern RAG_give_mean_color(RAG * rag, int block, int* colMoy){
+extern void RAG_give_mean_color(RAG * rag, int block, int* colMoy){
   int dim = image_give_dim(rag->im);
   int i;
   for (i=0;i<dim;i++){
-    colMoy[i] = rag->M[block].M1[i]/rag->M[block].M0;
+    colMoy[i] = rag->M[rag->father[block]].M1[i]/rag->M[rag->father[block]].M0;
   }
+}
+
+extern image get_image(RAG * rag){
+  return rag->im;
+}
+extern int get_nb_blocks(RAG * rag){
+  return rag->nb_blocks;
+}
+extern int get_n(RAG * rag){
+  return rag->n;
+}
+extern int get_m(RAG * rag){
+  return rag->m;
 }
