@@ -7,12 +7,13 @@ PATHLIB=../../lib/
 PATHOBJ=../../obj/main/
 PATHBIN=../../bin/main/
 OBJ=$(PATHOBJ)RAG.o $(PATHOBJ)merge.o $(PATHOBJ)moments.o
-all: test main
+
+all: test Segmentate
 
 test: testMoments testRAG testMerge
 
-main: $(OBJ)
-	$(CC) -o $(PATHBIN)Segmentation $^ $(LDFLAGS) $(PATHLIB)libimage.a
+Segmentate: $(OBJ) $(PATHOBJ)Segmentate.o
+	$(CC) -o $(PATHBIN)Segmentate $^ $(LDFLAGS) $(PATHLIB)libimage.a
 
 testRAG: $(OBJ) $(PATHOBJ)testRAG.o $(OBJ)
 	$(CC) -o $(PATHBIN)$@ $^ $(LDFLAGS) $(PATHLIB)libimage.a
