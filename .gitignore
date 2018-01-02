@@ -54,4 +54,4 @@ dkms.conf
 bin/main/test*
 bin/image/test*
 bin/image/main*
-bin/main/main*
+bin/main/segmentate
