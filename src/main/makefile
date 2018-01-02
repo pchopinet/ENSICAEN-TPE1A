@@ -6,21 +6,21 @@ LDFLAGS=
 PATHLIB=../../lib/
 PATHOBJ=../../obj/main/
 PATHBIN=../../bin/main/
-
-all: test
+OBJ=$(PATHOBJ)RAG.o $(PATHOBJ)merge.o $(PATHOBJ)moments.o
+all: test main
 
 test: testMoments testRAG testMerge
 
-main: $(PATHOBJ)merge.o
-	$(CC) -o $(PATHBIN)$@ $^ $(LDFLAGS) $(PATHLIB)libimage.a
+main: $(OBJ)
+	$(CC) -o $(PATHBIN)Segmentation $^ $(LDFLAGS) $(PATHLIB)libimage.a
 
-testRAG: $(PATHOBJ)RAG.o $(PATHOBJ)testRAG.o $(PATHOBJ)moments.o
+testRAG: $(OBJ) $(PATHOBJ)testRAG.o $(OBJ)
 	$(CC) -o $(PATHBIN)$@ $^ $(LDFLAGS) $(PATHLIB)libimage.a
 
 testMoments: $(PATHOBJ)testMoments.o $(PATHOBJ)moments.o
 	$(CC) -o $(PATHBIN)$@ $^ $(LDFLAGS) $(PATHLIB)libimage.a
 
-testMerge: $(PATHOBJ)merge.o $(PATHOBJ)testMerge.o $(PATHOBJ)RAG.o $(PATHOBJ)moments.o
+testMerge:$(OBJ) $(PATHOBJ)testMerge.o
 	$(CC) -o $(PATHBIN)$@ $^ $(LDFLAGS) $(PATHLIB)libimage.a
 
 $(PATHOBJ)merge.o: $(PATHOBJ)RAG.o
