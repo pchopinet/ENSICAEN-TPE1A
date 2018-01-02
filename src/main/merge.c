@@ -21,12 +21,12 @@
 #include <merge.h>
 #include <RAG.h>
 
-void perform_merge(RAG* rag,long double error_threshold){
+void perform_merge(RAG* rag,double error_threshold){
   int b1, b1_old = -1;
   int b2, b2_old = -1;
   int nb_merge = 0;
   long double error = get_error(rag);
-  long double error_limit = error * error_threshold/100;
+  long double error_limit = error * (long double)error_threshold;
   //for(int i=0;i<4050;i++){
   while (error<error_limit){
     //printf("Erreur : %Lf\n", error);
@@ -46,7 +46,7 @@ void perform_merge(RAG* rag,long double error_threshold){
   RAG_normalize_parents(rag);
 }
 
-image create_output_image(RAG * rag){
+image create_output_image(RAG * rag, char * filename){
   image old = get_image(rag);
   int dim = image_give_dim(old);
   int nb_blocks = get_nb_blocks(rag);
@@ -80,6 +80,6 @@ image create_output_image(RAG * rag){
     }
   }
 
-  image_sauvegarder(im,"test.ppm");
+  image_sauvegarder(im,filename);
   return im;
 }
