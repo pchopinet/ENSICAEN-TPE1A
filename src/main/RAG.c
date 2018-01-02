@@ -259,30 +259,30 @@ void RAG_merge_region(RAG * rag, int i, int j){
   rag->father[i] = j;
 }
 
-extern void RAG_normalize_parents(RAG* rag){
+extern void RAG_normalize_parents(RAG* rag) {
   int k;
-  for (k=rag->nb_blocks;k>=0;k--){
+  for (k=rag->nb_blocks;k>=0;k--) {
     rag->father[k] = rag->father[rag->father[k]];
   }
 }
 
-extern void RAG_give_mean_color(RAG * rag, int block, int* colMoy){
+extern void RAG_give_mean_color(RAG * rag, int block, int* colMoy) {
   int dim = image_give_dim(rag->im);
   int i;
-  for (i=0;i<dim;i++){
+  for (i=0;i<dim;i++) {
     colMoy[i] = rag->M[rag->father[block]].M1[i]/rag->M[rag->father[block]].M0;
   }
 }
 
-extern image get_image(RAG * rag){
+extern image get_image(RAG * rag) {
   return rag->im;
 }
-extern int get_nb_blocks(RAG * rag){
+extern int get_nb_blocks(RAG * rag) {
   return rag->nb_blocks;
 }
-extern int get_n(RAG * rag){
+extern int get_n(RAG * rag) {
   return rag->n;
 }
-extern int get_m(RAG * rag){
+extern int get_m(RAG * rag) {
   return rag->m;
 }

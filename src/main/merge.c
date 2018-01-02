@@ -27,7 +27,6 @@ void perform_merge(RAG* rag,double error_threshold){
   int nb_merge = 0;
   long double error = get_error(rag);
   long double error_limit = error * (long double)error_threshold;
-  //for(int i=0;i<4050;i++){
   while (error<error_limit){
     //printf("Erreur : %Lf\n", error);
     RAG_give_closest_region(rag,&b1,&b2);
