@@ -10,7 +10,8 @@
  */
 
 /**
- * @author Pierre Chopinet <pierre.chopinet@ecole.ensicaen.fr>
+ * @author Pierre Chopinet <pierre.chopinet@ecole.ensicaen.fr> 
+ * @author Clement Labonne <clement.labonne@ecole.ensicaen.fr>
  * @version 0.0.1 / 2017-12-17
  */
 
