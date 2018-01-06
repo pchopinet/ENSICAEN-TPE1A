@@ -11,6 +11,7 @@
 
 /**
 * @author Pierre Chopinet <pierre.chopinet@ecole.ensicaen.fr>
+* @author Clement Labonne <clement.labonne@ecole.ensicaen.fr>
 * @version 0.0.1 / 2017-12-16
 */
 
@@ -137,6 +138,15 @@ extern RAG* create_RAG(image im, int n, int m) {
   return rag;
 }
 
+/**
+* Function giving the both regions to merge and the partition error added by the merge.
+*
+* @param rag is a RAG structure pointeur.
+* @param b1 is a pointeur to the index of the first region to merge.
+* @param b2 is a pointeur to the index of the second region to merge.
+*
+* @return errorMin the error added to the partition error.
+*/
 extern long double RAG_give_closest_region(RAG * rag, int* b1, int* b2) {
   assert(rag->nb_blocks>1);
 
@@ -159,13 +169,9 @@ extern long double RAG_give_closest_region(RAG * rag, int* b1, int* b2) {
       while(cel!=NULL){
         error = 0;
         n = cel->block;
-        //printf("%d \n",n);
-        //fflush(stdout);
         if (rag->father[n]!=n) {
           cel->block = rag->father[n];
           tmp = cel;
-          //printf("%d %p\n",tmp->block,tmp->next);
-          //fflush(stdout);
           while (tmp->next!=NULL && tmp->block>tmp->next->block) {
             n = tmp->block;
             tmp->block = tmp->next->block;
@@ -197,6 +203,13 @@ extern long double RAG_give_closest_region(RAG * rag, int* b1, int* b2) {
   return errorMin;
 }
 
+/**
+* Function calculating the moment of the new region.
+*
+* @param rag is a RAG structure pointeur.
+* @param i is the index of the first region to merge.
+* @param j is the index of the second region to merge.
+*/
 static void RAG_merge_moments(RAG * rag, int i, int j){
   int dim = image_give_dim(rag->im);
   int k;
@@ -208,8 +221,14 @@ static void RAG_merge_moments(RAG * rag, int i, int j){
   }
 }
 
+/**
+* Function associating the new right neighbor to the blocks of the new region.
+*
+* @param rag is a RAG structure pointeur.
+* @param i is the index of the first region to merge.
+* @param j is the index of the second region to merge.
+*/
 static void RAG_merge_neighbors(RAG * rag, int i, int j){
-  //int k;
   Cellule * ci = &(rag->neighbors[i]);
   Cellule * cj = &(rag->neighbors[j]);
 
@@ -224,7 +243,7 @@ static void RAG_merge_neighbors(RAG * rag, int i, int j){
       temp1 = cj->next;
       temp2 = ci->next;
       cj->next = ci;
-      ci->next = temp1;//cj->next->next = temp1
+      ci->next = temp1;
       ci = temp2;
     }else if(cj->next == NULL && cj->block<ci->block){
       cj->next = ci;
@@ -234,6 +253,13 @@ static void RAG_merge_neighbors(RAG * rag, int i, int j){
   rag->neighbors[i].next = NULL;
 }
 
+/**
+* Function merging two regions.
+*
+* @param rag is a RAG structure pointeur.
+* @param i is the index of the first region to merge.
+* @param j is the index of the second region to merge.
+*/
 void RAG_merge_region(RAG * rag, int i, int j){
 
   assert(i<j);
@@ -257,6 +283,11 @@ void RAG_merge_region(RAG * rag, int i, int j){
   rag->father[i] = j;
 }
 
+/**
+* Function associating the good father to each block.
+*
+* @param rag is a RAG structure pointeur.
+*/
 extern void RAG_normalize_parents(RAG* rag) {
   int k;
   for (k=rag->nb_blocks;k>=0;k--) {
@@ -264,6 +295,13 @@ extern void RAG_normalize_parents(RAG* rag) {
   }
 }
 
+/**
+* Function giving the average color of a block.
+*
+* @param rag is a RAG structure pointeur.
+* @param block is the index of the block.
+* @param colMoy is a pointer to the average color array.
+*/
 extern void RAG_give_mean_color(RAG * rag, int block, int* colMoy) {
   int dim = image_give_dim(rag->im);
   int i;
@@ -272,19 +310,52 @@ extern void RAG_give_mean_color(RAG * rag, int block, int* colMoy) {
   }
 }
 
+/**
+* Function giving the partition error.
+*
+* @param rag is a RAG structure pointeur.
+* @return rag->erreur_partition is the partition error.
+*/
 extern long double get_error(RAG * rag){
   return rag->erreur_partition;
 }
 
+/**
+* Function giving the image.
+*
+* @param rag is a RAG structure pointeur.
+* @return rag->im is the image.
+*/
 extern image get_image(RAG * rag) {
   return rag->im;
 }
+
+/**
+* Function giving the number of blocks.
+*
+* @param rag is a RAG structure pointeur.
+* @return rag->nb_blocks is the number of blocks.
+*/
 extern int get_nb_blocks(RAG * rag) {
   return rag->nb_blocks;
 }
+
+/**
+* Function giving the number of blocks per row.
+*
+* @param rag is a RAG structure pointeur.
+* @return rag->n is a RAG structure pointeur row.
+*/
 extern int get_n(RAG * rag) {
   return rag->n;
 }
+
+/**
+* Function giving the number of blocks per column.
+*
+* @param rag is a RAG structure pointeur.
+* @return rag->m is a RAG structure pointeur column.
+*/
 extern int get_m(RAG * rag) {
   return rag->m;
 }
