@@ -37,7 +37,7 @@ struct cellule_t{
 
 struct RAG_t{
   image im;
-  int nb_blocks;
+  int nb_blocks,n ,m;
   long double erreur_partition;
   Moments* M;
   int * father;
@@ -49,7 +49,7 @@ int main() {
   Cellule* cel;
   image im=FAIRE_image();
   image_charger(im,"../../img/lenna.ppm");
-  RAG* rag = create_RAG(im,2,4);
+  RAG* rag = create_RAG(im,4,4);
   printf ("Nombre de blocks : %d\n",rag->nb_blocks);
   printf ("Erreur de Partition : %Lf\n",rag->erreur_partition);
   for (i=0; i<rag->nb_blocks; i++) {

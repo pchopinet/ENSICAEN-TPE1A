@@ -53,3 +53,6 @@ dkms.conf
 
 bin/main/*
 bin/image/*
+
+.idea/
+cmake*

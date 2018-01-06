@@ -137,10 +137,6 @@ extern RAG* create_RAG(image im, int n, int m) {
   return rag;
 }
 
-extern long double get_error(RAG * rag){
-  return rag->erreur_partition;
-}
-
 extern long double RAG_give_closest_region(RAG * rag, int* b1, int* b2) {
   assert(rag->nb_blocks>1);
 
@@ -274,6 +270,10 @@ extern void RAG_give_mean_color(RAG * rag, int block, int* colMoy) {
   for (i=0;i<dim;i++) {
     colMoy[i] = rag->M[rag->father[block]].M1[i]/rag->M[rag->father[block]].M0;
   }
+}
+
+extern long double get_error(RAG * rag){
+  return rag->erreur_partition;
 }
 
 extern image get_image(RAG * rag) {
