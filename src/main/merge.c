@@ -40,7 +40,7 @@ void perform_merge(RAG* rag,double error_threshold){
     b1_old = b1;
     b2_old = b2;
   }
-  printf("%d\n",nb_merge );
+  printf("Number of merge : %d\n",nb_merge );//a laisser
   RAG_give_closest_region(rag,&b1,&b2);
   RAG_normalize_parents(rag);
 }

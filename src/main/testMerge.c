@@ -22,7 +22,7 @@
 
 int main(int argc, char const *argv[]) {
   image im = FAIRE_image();
-  image_charger(im,"../../img/fille.ppm");
+  image_charger(im,"../../img/norvege.ppm");
   RAG* rag = create_RAG(im,128,128);
   perform_merge(rag,1.01);
   create_output_image(rag, "test.ppm");

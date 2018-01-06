@@ -24,7 +24,7 @@
 int main(int argc, char const *argv[]) {
   int i;
   double threshold = 1.01;
-  printf("%d\n",argc );
+  //printf("%d\n",argc );
 	if (argc < 5) {
 		printf("Usage: %s <filename> <filename_output> <Width_nb_of_block> <Height_nb_of_block> [<threshold> : 1.01]\n", argv[0]);
 		exit(EXIT_FAILURE);
