@@ -11,6 +11,7 @@
 
 /**
 * @author Pierre Chopinet <pierre.chopinet@ecole.ensicaen.fr>
+* @author Clement Labonne <clement.labonne@ecole.ensicaen.fr>
 * @version 0.0.1 / 2017-12-29
 */
 
@@ -21,6 +22,13 @@
 #include <merge.h>
 #include <RAG.h>
 
+
+/**
+* Function merging regions until the error reach a threshold.
+*
+* @param rag is a RAG structure pointeur.
+* @param error_threshold is the threshold the error have to reach to stop the mergers.
+*/
 void perform_merge(RAG* rag,double error_threshold){
   int b1, b1_old = -1;
   int b2, b2_old = -1;
@@ -28,9 +36,7 @@ void perform_merge(RAG* rag,double error_threshold){
   long double error = get_error(rag);
   long double error_limit = error * (long double)error_threshold;
   while (error<error_limit){
-    //printf("Erreur : %Lf\n", error);
     RAG_give_closest_region(rag,&b1,&b2);
-    //printf("Blocks : %d %d\n",b1,b2);
     if (b1==b1_old && b2 == b2_old) {
       break;
     }
@@ -40,11 +46,19 @@ void perform_merge(RAG* rag,double error_threshold){
     b1_old = b1;
     b2_old = b2;
   }
-  printf("Number of merge : %d\n",nb_merge );//a laisser
+  printf("Number of merge : %d\n",nb_merge );
   RAG_give_closest_region(rag,&b1,&b2);
   RAG_normalize_parents(rag);
 }
 
+/**
+* Function creating an image with the regions and their average color.
+*
+* @param rag is a RAG structure pointeur.
+* @param filename is the adress of the new image.
+*
+* @return im the new image.
+*/
 image create_output_image(RAG * rag, char * filename){
   image old = get_image(rag);
   int dim = image_give_dim(old);
