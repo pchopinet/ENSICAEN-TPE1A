@@ -104,7 +104,7 @@ static void init_neighbors_priv(RAG* rag, int n, int m) {
 static void init_partition_error_priv(RAG * rag) {
   int i, k;
   int M0;
-  double M1, M2;
+  long double M1, M2;
   int dim = image_give_dim(rag->im);
   rag->erreur_partition = 0;
   for (i=0; i<rag->nb_blocks; i++) {
@@ -141,12 +141,12 @@ extern long double get_error(RAG * rag){
   return rag->erreur_partition;
 }
 
-extern double RAG_give_closest_region(RAG * rag, int* b1, int* b2) {
+extern long double RAG_give_closest_region(RAG * rag, int* b1, int* b2) {
   assert(rag->nb_blocks>1);
 
   int i, k, n;
-  double error;
-  double errorMin;
+  long double error;
+  long double errorMin;
   errorMin = DBL_MAX;
   Cellule* cel;
   Cellule* tmp;
@@ -230,6 +230,8 @@ static void RAG_merge_neighbors(RAG * rag, int i, int j){
       cj->next = ci;
       ci->next = temp1;//cj->next->next = temp1
       ci = temp2;
+    }else if(cj->next == NULL && cj->block<ci->block){
+      cj->next = ci;
     }
     cj = cj->next;
   }
@@ -241,7 +243,7 @@ void RAG_merge_region(RAG * rag, int i, int j){
   assert(i<j);
 
   int k;
-  double error = 0;
+  long double error = 0;
   int dim = image_give_dim(rag->im);
   RAG_merge_moments(rag,i,j);
   RAG_merge_neighbors(rag,i,j);
