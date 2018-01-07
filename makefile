@@ -1,6 +1,6 @@
 #  -*- c-basic-offset : 4 -*-
 
-all: segmentate test staticlibimage doc
+all: staticlibimage segmentate test  doc
 
 segmentate:
 	make -C ./src/main/ Segmentate
