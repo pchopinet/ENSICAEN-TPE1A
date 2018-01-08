@@ -92,7 +92,7 @@ image create_output_image(RAG * rag, char * filename){
       image_move_to(im,&point);
     }
   }
-
-  image_sauvegarder(im,filename);
+  free(temp);
+  image_sauvegarder(im, filename);
   return im;
 }
