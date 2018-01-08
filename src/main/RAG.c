@@ -290,7 +290,8 @@ void RAG_merge_region(RAG * rag, int i, int j){
 */
 extern void RAG_normalize_parents(RAG* rag) {
   int k;
-  for (k=rag->nb_blocks;k>=0;k--) {
+  for (k=rag->nb_blocks-1;k>=0;k--) {
+    printf("%d\n", rag->father[k]);
     rag->father[k] = rag->father[rag->father[k]];
   }
 }
