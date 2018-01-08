@@ -6,21 +6,28 @@ LDFLAGS=
 PATHLIB=../../lib/
 PATHOBJ=../../obj/main/
 PATHBIN=../../bin/main/
+OBJ=$(PATHOBJ)RAG.o $(PATHOBJ)merge.o $(PATHOBJ)moments.o
 
+all: test Segmentate
 
+test: testMoments testRAG testMerge
 
-all: test
+Segmentate: $(OBJ) $(PATHOBJ)Segmentate.o
+	$(CC) -o $(PATHBIN)Segmentate $^ $(LDFLAGS) $(PATHLIB)libimage.a
 
-test: testMoments testRAG
-
-testRAG: $(PATHOBJ)RAG.o $(PATHOBJ)testRAG.o $(PATHOBJ)moments.o 
+testRAG: $(OBJ) $(PATHOBJ)testRAG.o $(OBJ)
 	$(CC) -o $(PATHBIN)$@ $^ $(LDFLAGS) $(PATHLIB)libimage.a
 
 testMoments: $(PATHOBJ)testMoments.o $(PATHOBJ)moments.o
 	$(CC) -o $(PATHBIN)$@ $^ $(LDFLAGS) $(PATHLIB)libimage.a
 
+testMerge:$(OBJ) $(PATHOBJ)testMerge.o
+	$(CC) -o $(PATHBIN)$@ $^ $(LDFLAGS) $(PATHLIB)libimage.a
+
+$(PATHOBJ)merge.o: $(PATHOBJ)RAG.o
+
 $(PATHOBJ)%.o: %.c ../../include/*.h
 	$(CC) $< $(CFLAGS) -c -o $@
 
 clean:
-	rm -rf $(PATHOBJ)*.o 
+	rm -rf $(PATHOBJ)*.o

@@ -51,4 +51,8 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
-bin/*
+bin/main/*
+bin/image/*
+doc/*
+.idea/
+cmake*

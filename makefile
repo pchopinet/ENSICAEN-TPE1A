@@ -1,16 +1,21 @@
 #  -*- c-basic-offset : 4 -*-
 
-all: test staticlibimage doc
+all: staticlibimage segmentate test doc
 
-test:
+segmentate:
+	make -C ./src/main/ Segmentate
+
+test: segmentate
 	make -C ./src/image/ test
+	make -C ./src/main/ test
 
 staticlibimage:
 	make -C ./src/image/ staticlib
 
-doc:
-	doygen
+doc: segmentate
+	doxygen
 
-distclean:
-	make -C ./src/tinyimage/ clean
-	rm -rf doc/html/
+clean:
+	make -C ./src/main/ clean
+	make -C ./src/image/ clean
+	rm -rf doc/*

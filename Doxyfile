@@ -1,0 +1,6 @@
+PROJECT_NAME = TPE 1A Segmentation
+GENERATE_HTML = YES
+GENERATE_LATEX = NO
+GENERATE_RTF = NO
+OUTPUT_DIRECTORY = doc
+INPUT = include/ src/main/ src/image/
