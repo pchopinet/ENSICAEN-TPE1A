@@ -1,7 +1,15 @@
 # ENSICAEN-TPE1A
 Pierre Chopinet - Clement Labonne 
 
-To compile use make
+To compile use  ```make```
 
-To segmentate use ./bin/main/Segmentate
+To check that everything is installed correctly type : 
 
+```shell
+./bin/main/Segmentate img/fille.ppm output.ppm 64 64 
+```
+
+To segmentate use : 
+```shell
+./bin/main/Segmentate
+```
