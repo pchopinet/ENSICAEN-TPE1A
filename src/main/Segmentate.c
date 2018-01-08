@@ -45,6 +45,6 @@ int main(int argc, char const *argv[]) {
   RAG* rag = create_RAG(im,n,m);
   perform_merge(rag,threshold);
   create_output_image(rag, argv[2]);
-
+  DEFAIRE_image(im);
   exit(EXIT_SUCCESS);
 }
