@@ -18,5 +18,5 @@ To check that everything is installed correctly type :
 
 To segmentate use : 
 ```shell
-./bin/main/Segmentate <filename> <filename_output> <Width_nb_of_block> <Height_nb_of_block> [<threshold> : 1.01]
+./bin/main/Segmentate <filename> <filename_output> <Width_nb_of_block> <Height_nb_of_block> [<threshold>]
 ```
