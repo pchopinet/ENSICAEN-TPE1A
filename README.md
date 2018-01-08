@@ -1,5 +1,10 @@
 # ENSICAEN-TPE1A
-Pierre Chopinet - Clement Labonne 
+
+Authors : 
+
+Pierre Chopinet <pierre.chopinet@ecole.ensicaen.fr>
+
+Clement Labonne <clement.labonne@ecole.ensicaen.fr>
 
 To compile use  ```make```
 
